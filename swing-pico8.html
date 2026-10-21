@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>swing_pico8 · Giordano Malta</title>
+<meta name="description" content="Four PICO-8 cartridges for making lofi beats with swing inspired by J Dilla's timing, recorded one track per cartridge on a handheld console.">
+<meta property="og:title" content="swing_pico8">
+<meta property="og:description" content="Four PICO-8 cartridges that turn a handheld console into a beat-making tool.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="site">
+    <a class="name" href="./">Giordano Malta</a>
+    <nav aria-label="Main">
+      <a href="./#projects" aria-current="page">Projects</a>
+      <a href="./#about">About</a>
+    </nav>
+  </header>
+  <main id="main">
+    <div class="lead">
+      <h1>swing_pico8</h1>
+      <p class="lede">Four PICO-8 cartridges for making lofi beats with real swing. Drums, keys and textures each record as a separate track from a handheld console, and a fourth cartridge plays them together.</p>
+      <p class="note">PICO-8 is a fantasy console: a small virtual machine with a 128×128 screen and strict limits, available on computers, handhelds and phones.</p>
+      <ul class="links">
+        <li><a href="https://giordams.itch.io/swing-lofi">Download on itch.io (name your own price)</a></li>
+        <li><a href="https://github.com/santiago-giordano/swing_pico8">Source on GitHub (MIT)</a></li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="demo-h" style="padding-top:0">
+      <div class="demo">
+        <h2 id="demo-h">Same pattern, four grooves</h2>
+        <p class="sub">Two bars at 90 BPM, recorded from the cartridges and looped. The drum pattern is identical in all four; only the timing changes. Faint lines mark sixteenth notes and the brighter ones mark the bar. Switch grooves while it plays, or click the waveform to jump.</p>
+        <div class="switch" role="group" aria-label="Groove">
+          <button type="button" data-groove="1" aria-pressed="true">Classic swing</button>
+          <button type="button" data-groove="2" aria-pressed="false">Laid back</button>
+          <button type="button" data-groove="3" aria-pressed="false">Snare ahead</button>
+          <button type="button" data-groove="4" aria-pressed="false">Drunk</button>
+        </div>
+        <div class="wave" id="wave" role="img" aria-label="Waveform of the selected groove over a sixteenth-note grid"></div>
+        <div class="transport">
+          <button type="button" class="play" id="play" aria-pressed="false">Play</button>
+          <span id="clock" aria-hidden="true">0.0 / 5.3 s</span>
+        </div>
+        <p class="note" id="desc" aria-live="polite" style="margin:.9rem 0 0"></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="q-h">
+      <h2 id="q-h">What makes a beat feel human</h2>
+      <p>I studied drums for years, and this is a drummer's question. J Dilla's answer is close to a programming problem: each drum voice sits on its own grid, and those small offsets repeat exactly every bar. The repetition is what turns them into a feel instead of a mistake.</p>
+      <p>The swing control on a drum machine such as the MPC is a percentage. 50 % is straight eighths, 66.7 % is a triplet. swing_pico8 gives each voice its own swing, a set of offset templates, a per-track nudge, a flam, slow drift over four bars and three kinds of humanization.</p>
+      <p class="note">The groove presets are starting points inferred from transcriptions. No published measurements in milliseconds of Dilla's tracks exist, so they are not a copy of his sound.</p>
+    </section>
+
+    <section aria-labelledby="how-h">
+      <h2 id="how-h">Timing on a small machine</h2>
+      <p>PICO-8's normal sound engine runs at 60 frames per second, about 16 ms per tick. Swing needs finer steps, so the drums are generated sample by sample through the console's raw audio output, and every hit is scheduled at sample level. Each cartridge fits PICO-8's limit of 8,192 tokens, and a whole song lives in 256 bytes of saved data shared by all four.</p>
+      <p>To check the timing I built a test bench. It runs the cartridges in an open-source PICO-8 emulator, records the audio and measures where each hit lands.</p>
+      <dl class="facts">
+        <div><dt>0.14 ms</dt><dd>Largest error with a 66 % global swing at 90 BPM.</dd></div>
+        <div><dt>+39.9 / −40.1 ms</dt><dd>Measured result for nudges of +40 and −40 ms.</dd></div>
+        <div><dt>35–40 %</dt><dd>CPU used by the drum cartridge on the handheld at 90 BPM.</dd></div>
+      </dl>
+      <p class="note" style="margin-top:1.2rem">The first two figures come from the emulator test bench; the third was measured on the console.</p>
+    </section>
+
+    <section aria-labelledby="kick-h">
+      <h2 id="kick-h">The kick drum the speaker couldn't play</h2>
+      <p>On the console, the hi-hat sounded louder than the kick. The code was fine. The built-in speaker cannot reproduce the body of a kick, roughly 50 to 160 Hz, so the hat became the loudest hit.</p>
+      <p>A short midrange click (about 700 down to 300 Hz over 20 ms) with some saturation brought the kick back: above 400 Hz it went from 14–19 dB below the hat to within 6 dB. It ships as a "speaker" option, and the bass uses the same idea.</p>
+    </section>
+
+    <section aria-labelledby="carts-h">
+      <h2 id="carts-h">The four cartridges</h2>
+      <ul class="plain">
+        <li><strong>swing_beats:</strong> drums. Five tracks, three velocities per step, four kits, and the groove controls above.</li>
+        <li><strong>swing_keys:</strong> bass, lead and chords written by scale degree, with tape-style wobble and a tempo-synced echo.</li>
+        <li><strong>swing_noise:</strong> vinyl, tape, rain, fire, sea and night layers, ducked against the kick.</li>
+        <li><strong>swing_mix:</strong> plays the three together, with level, mute and solo for each.</li>
+      </ul>
+      <p>All four share one song file, so tempo, swing, key and arrangement stay in sync. Each cartridge records its own track through the line output, and the takes line up on the first click.</p>
+      <video controls preload="metadata" poster="assets/console-mix.png" width="720" height="720">
+        <source src="assets/swing-lofi-preview.mp4" type="video/mp4">
+        A preview of the four cartridges running, with the same pattern played in four grooves followed by the mixer.
+      </video>
+      <p class="note" style="margin-top:.8rem">The same four grooves as above, followed by swing_mix. The picture is the cartridges' own screen.</p>
+    </section>
+
+    <section aria-labelledby="run-h">
+      <h2 id="run-h">Running it</h2>
+      <ul class="plain">
+        <li>Use the official PICO-8 (about US$15). With the free fake-08 emulator, swing_keys works fully, swing_beats falls back to a simpler mode and swing_noise is silent, because that emulator has no raw audio output.</li>
+        <li>Tested on desktop PICO-8, on an Anbernic RG CubeXX running Knulli, and on Android with PICO-8.</li>
+        <li>The audio is 8-bit at 5.5 kHz, which is part of the lofi sound and leaves no high frequencies.</li>
+        <li>On the CubeXX, swing_mix runs close to the CPU limit. If you hear dropouts, mute a layer.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="ai-h">
+      <h2 id="ai-h">How it was built</h2>
+      <p>I built it with AI assistance for the code and the on-screen interface. I set the design, tested every version on the console and decided what to fix. The source is open under the MIT license, with the cartridges in English and Spanish and the tests included.</p>
+      <ul class="links">
+        <li><a href="https://giordams.itch.io/swing-lofi">itch.io</a></li>
+        <li><a href="https://github.com/santiago-giordano/swing_pico8">GitHub</a></li>
+        <li><a href="https://youtu.be/n9OyCdPD6Is">Preview on YouTube</a></li>
+      </ul>
+      <p class="note" style="margin-top:1.2rem">Not affiliated with Lexaloffle. PICO-8 is their product.</p>
+    </section>
+  </main>
+  <footer class="site">
+    <span>© 2026 Giordano Malta</span>
+    <ul aria-label="Elsewhere">
+      <li><a href="https://github.com/santiago-giordano">GitHub</a></li>
+      <li><a href="https://giordams.itch.io">itch.io</a></li>
+      <li><a href="https://www.youtube.com/channel/UCC86qK1N--HXlxEF3xREAeA">YouTube</a></li>
+    </ul>
+  </footer>
+</div>
+<script src="assets/peaks.js"></script>
+<script src="assets/demo.js"></script>
+</body>
+</html>
